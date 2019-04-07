@@ -1,4 +1,5 @@
 ARG processor
+
 FROM 520713654638.dkr.ecr.us-west-2.amazonaws.com/sagemaker-tensorflow-scriptmode:1.11.0-$processor-py3
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -26,15 +27,25 @@ RUN pip install --no-cache-dir \
     PyOpenGL==3.1.0 \
     gym==0.10.5 \
     redis==2.10.6 \
-    rl-coach-slim==0.11.0 && \
-    pip install --no-cache-dir --upgrade sagemaker-containers
+    rl-coach-slim==0.11.0 #&& \
+    #pip install --no-cache-dir --upgrade sagemaker-containers
+	
 
 ENV COACH_BACKEND=tensorflow
+
 
 # Copy workaround script for incorrect hostname
 COPY lib/changehostname.c /
 COPY lib/start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
+
+ARG sagemaker_container
+
+RUN test $sagemaker_container || exit 1
+RUN echo $sagemaker_container
+COPY $sagemaker_container .
+RUN pip install -U --no-cache-dir $sagemaker_container
+RUN rm $sagemaker_container
 
 WORKDIR /opt/ml
 
