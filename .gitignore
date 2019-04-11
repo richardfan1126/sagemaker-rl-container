@@ -11,3 +11,4 @@ build/
 .idea/*
 .cache
 .DS_Store
+*.tar.gz
