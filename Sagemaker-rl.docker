@@ -1,0 +1,21 @@
+FROM nabcrr/sagemaker-rl-tensorflow:coach0.11-cpu-py3
+EXPOSE 6379
+
+COPY lib/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+WORKDIR /opt/ml
+
+ARG sagemaker_container
+
+RUN test $sagemaker_container || exit 1
+RUN echo $sagemaker_container
+COPY $sagemaker_container .
+RUN pip install -U --no-cache-dir $sagemaker_container
+RUN rm $sagemaker_container
+
+
+# Starts framework
+ENTRYPOINT ["/bin/bash", "-c", "start.sh train"]
+#ENTRYPOINT ["/bin/bash", "-m", "start.sh"]
+CMD ["start.sh", "train"]
