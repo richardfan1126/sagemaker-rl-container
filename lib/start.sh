@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-if [ $1 == 'train' ]
+echo "\$1 is $1"
+if [ "$1" == 'train' ]
 then
 	echo "In train start.sh"
     # Remove all nvidia gl libraries if they exists to run training in SageMaker.
@@ -23,7 +24,7 @@ then
 	echo "Done Compiling changehostname.c"
 	which xvfb-run
     LD_PRELOAD=/libchangehostname.so xvfb-run --auto-servernum -s "-screen 0 1400x900x24" train
-elif [ $1 == 'serve' ]
+elif [ "$1" == 'serve' ]
 then
     serve
 fi
