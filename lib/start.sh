@@ -25,6 +25,7 @@ then
 	export XAUTHORITY=/root/.Xauthority
 	export DISPLAY=:0 # Select screen 0 by default.
 	xvfb-run -f $XAUTHORITY -l -n 0 -s ":0 -screen 0 1400x900x24" jwm &
+	redis-server &
 	x11vnc -bg -forever -nopw -rfbport 5800 -display WAIT$DISPLAY &
     LD_PRELOAD=/libchangehostname.so train &
 	wait
