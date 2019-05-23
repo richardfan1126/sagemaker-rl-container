@@ -19,6 +19,8 @@ RUN rm $sagemaker_container
 
 RUN apt-get update && apt-get install jwm x11vnc -y
 
+RUN pip install --no-cache-dir rospkg rospkg-modules
+
 # Starts framework
 ENTRYPOINT ["/bin/bash", "-c", "start.sh train"]
 #ENTRYPOINT ["/bin/bash", "-m", "start.sh"]

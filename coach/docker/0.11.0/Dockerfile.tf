@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+ADD requirements.txt requirements.txt
+RUN pip install -r requirements.txt --no-cache-dir
+
 # Install Redis.
 RUN cd /tmp && \
     wget http://download.redis.io/redis-stable.tar.gz && \
