@@ -1,25 +1,41 @@
-FROM nabcrr/sagemaker-rl-tensorflow:coach0.11-cpu-py3
+FROM crr0004/sagemaker-rl-tensorflow:base
 EXPOSE 6379
 EXPOSE 5800
 EXPOSE 6006
 
-COPY lib/start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
 
 WORKDIR /opt/ml
+
+RUN apt-get update && apt-get install jwm x11vnc python3.6 -y
+
+# Fix python3.6 and pip from previous hard wiring in the base image
+RUN curl -fSsL -O https://bootstrap.pypa.io/get-pip.py && \
+    python3.6 get-pip.py \
+		    --disable-pip-version-check \
+		    --no-cache-dir \
+		    "pip"
+
+RUN pip3.6 install -U pip
 
 ARG sagemaker_container
 
 RUN test $sagemaker_container || exit 1
 RUN echo $sagemaker_container
 COPY $sagemaker_container .
-RUN pip install -U --no-cache-dir $sagemaker_container 
+RUN pip3.6 install -U --no-cache-dir $sagemaker_container rospkg rospkg-modules
 #"tensorboard<1.12.0,>=1.11.0"
 RUN rm $sagemaker_container
 
-RUN apt-get update && apt-get install jwm x11vnc -y
 
-RUN pip install --no-cache-dir rospkg rospkg-modules
+RUN apt-get update && apt-get install libnuma-dev -y
+RUN wget -qO - http://repo.radeon.com/rocm/apt/debian/rocm.gpg.key | apt-key add -
+RUN echo 'deb [arch=amd64] http://repo.radeon.com/rocm/apt/debian/ xenial main' | tee /etc/apt/sources.list.d/rocm.list
+RUN apt-get update && apt-get install rocm-dev -y
+
+COPY lib/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+# Fix train script to use python3.6
+RUN sed -i 's/^#!\/usr\/bin\/python$/#!\/usr\/bin\/python3.6/' /usr/local/bin/train
 
 # Starts framework
 ENTRYPOINT ["/bin/bash", "-c", "start.sh train"]
