@@ -18,13 +18,11 @@ RUN curl -fSsL -O https://bootstrap.pypa.io/get-pip.py && \
 RUN pip3.6 install -U pip
 
 ARG sagemaker_container
-ARG intel_coach
 
 RUN test $sagemaker_container || exit 1
-RUN test $intel_coach || exit 1
 COPY $sagemaker_container .
 COPY $intel_coach .
-RUN pip3.6 install -U --no-cache-dir $sagemaker_container $intel_coach rospkg rospkg-modules
+RUN pip3.6 install -U --no-cache-dir $sagemaker_container rospkg rospkg-modules
 #"tensorboard<1.12.0,>=1.11.0"
 RUN rm $sagemaker_container
 
