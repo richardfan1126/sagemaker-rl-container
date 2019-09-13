@@ -31,7 +31,7 @@ RUN pip install --no-cache-dir \
     PyOpenGL==3.1.0 \
     gym==0.10.5 \
     redis==2.10.6 \
-    rl-coach-slim==0.11.0
+    rl-coach-slim==0.11.1
 
 
 
@@ -58,12 +58,14 @@ RUN pip3.6 install -U --no-cache-dir $sagemaker_container rospkg rospkg-modules
 RUN rm $sagemaker_container
 
 
+COPY redis.conf redis.conf
 COPY lib/start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
+COPY lib/changehostname.c /
 # Fix train script to use python3.6
 RUN sed -i 's/^#!\/usr\/bin\/python$/#!\/usr\/bin\/python3.6/' /usr/local/bin/train
 
 # Starts framework
 ENTRYPOINT ["/bin/bash", "-c", "start.sh train"]
 #ENTRYPOINT ["/bin/bash", "-m", "start.sh"]
-CMD ["start.sh", "train"]
+CMD ["start.sh train"]

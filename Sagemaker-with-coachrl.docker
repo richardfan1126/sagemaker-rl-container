@@ -1,4 +1,4 @@
-FROM nabcrr/sagemaker-rl-tensorflow:coach0.11-cpu-py3
+FROM crr0004/sagemaker-rl-tensorflow:coach0.11-cpu-py3
 EXPOSE 6379
 EXPOSE 5800
 EXPOSE 6006
