@@ -16,8 +16,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ADD requirements.txt requirements.txt
-RUN pip install -r requirements.txt --no-cache-dir
 
 # Install Redis.
 RUN cd /tmp && \
@@ -26,14 +24,6 @@ RUN cd /tmp && \
     cd redis-stable && \
     make && \
     make install
-
-RUN pip install --no-cache-dir \
-    PyOpenGL==3.1.0 \
-    gym==0.10.5 \
-    redis==2.10.6 \
-    rl-coach-slim==0.11.1
-
-
 
 WORKDIR /opt/ml
 
@@ -46,15 +36,18 @@ RUN curl -fSsL -O https://bootstrap.pypa.io/get-pip.py && \
 		    --no-cache-dir \
 		    "pip"
 
-RUN pip3.6 install -U pip
+RUN pip3.6 install -U pip setuptools
+
 
 ARG sagemaker_container
 
 RUN test $sagemaker_container || exit 1
 RUN echo $sagemaker_container
 COPY $sagemaker_container .
-RUN pip3.6 install -U --no-cache-dir $sagemaker_container rospkg rospkg-modules
-#"tensorboard<1.12.0,>=1.11.0"
+ADD requirements.txt requirements.txt
+
+RUN pip3.6 install -U --no-cache-dir -r requirements.txt tensorflow-gpu==1.12
+RUN pip3.6 install -U --no-cache-dir $sagemaker_container
 RUN rm $sagemaker_container
 
 
