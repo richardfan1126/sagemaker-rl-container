@@ -9,8 +9,8 @@ RUN chmod +x /usr/local/bin/start.sh
 
 WORKDIR /opt/ml
 
-ARG sagemaker_container
-ARG intel_coach
+ARG sagemaker_container=sagemaker_containers-2.4.4.post2.tar.gz
+ARG intel_coach=rl-coach-slim-0.11.1.tar.gz
 
 RUN test $sagemaker_container || exit 1
 RUN echo $sagemaker_container
@@ -23,7 +23,7 @@ RUN rm $intel_coach
 
 RUN apt-get update && apt-get install jwm x11vnc -y
 
-RUN pip install --no-cache-dir rospkg rospkg-modules
+RUN pip install --no-cache-dir rospkg
 
 # Starts framework
 ENTRYPOINT ["/bin/bash", "-c", "start.sh train"]
