@@ -22,10 +22,12 @@ WORKDIR /opt/ml
 
 RUN test $sagemaker_container || exit 1
 COPY $sagemaker_container .
+COPY $intel_coach .
 
 ADD requirements.txt requirements.txt
-RUN pip3.6 install -r requirements.txt --no-cache-dir $sagemaker_container
+RUN pip3.6 install -r requirements.txt --no-cache-dir $intel_coach $sagemaker_container
 RUN rm $sagemaker_container
+RUN rm $intel_coach
 
 ENV COACH_BACKEND=tensorflow
 
