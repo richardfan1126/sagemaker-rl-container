@@ -4,6 +4,7 @@ EXPOSE 5800
 EXPOSE 6006
 
 ARG sagemaker_container
+ARG intel_coach
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         jq \
@@ -12,8 +13,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libxrender1 \
         python3-opengl \
         wget \
-		jwm \ 
-		x11vnc \ 
+		jwm \
+		x11vnc \
         xvfb && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
